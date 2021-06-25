@@ -7,7 +7,7 @@ def pencil(img, k_size):
     # Apply GaussianBlur
     blur = cv2.GaussianBlur(gray, (k_size*2+1, k_size*2+1), 0, 0)
     blend = cv2.divide(gray, blur, scale=250.0)
-    canvas = cv2.imread("C:\\Users\\nguye\\Downloads\\pencilsketch_bg.jpg")
+    canvas = cv2.imread("./bg/pencilsketch_bg.jpg")
     width, height = img.shape[:2]
     img_blend=blend.copy()
     if canvas is not None:
