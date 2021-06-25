@@ -52,7 +52,6 @@ def importImg(label):
     global current
     current = None
     filetypes = (
-        ('all files', '*.*'),
         ('png files', '*.png'),
         ('jpg files', '*.jpg')
     )
