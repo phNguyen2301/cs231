@@ -93,14 +93,12 @@ def importImg(label):
     
     label.config(image=img_1)
     label.image = img_1
-    label.grid(row=1, column=1)
+    label.place(x=1, y=1)
 
 def disable_slider(next):
     global current
     if current == 'brightness':
         brightness_slider.place(x=-100,y=-100)
-    if current == 'contrast':
-        contrast_slider.place(x=-100,y=-100)
     if current == 'cartoon':
         cartoon_slider.place(x=-100,y=-100)
     if current == 'emboss':
@@ -115,8 +113,6 @@ def disable_slider(next):
 def enable_slider():
     if current == 'brightness':
         brightness_slider.place(x = 320, y = 705)
-    if current == 'contrast':
-        contrast_slider.place(x = 320, y = 705)
     if current == 'cartoon':
         cartoon_slider.place(x = 320, y = 705)
     if current == 'emboss':
@@ -132,7 +128,7 @@ def previewImg(label, filter=None, val=0, val2=0):
         img_output = brightness.brightness(img_input, val)
 
     elif filter == 'contrast':
-        img_output == contrast.contrast(img_input, val, val2)
+        img_output = contrast.contrast(img_input, val, val2)
 
     elif filter == 'cartoon':
         img_output = cartoon.cartoon(img_input, val)
@@ -155,7 +151,7 @@ def previewImg(label, filter=None, val=0, val2=0):
     img_2 = ImageTk.PhotoImage(image=Image.fromarray(img_output_display))
     label.config(image=img_2)
     label.image = img_2
-    label.grid(row=1, column=2)
+    label.place(x=701,y=1)
     disable_slider(filter)
     disable_slider(filter)
     enable_slider()
@@ -191,7 +187,7 @@ brightness_button.config(height=2, width=15)
 brightness_button.place(x=1420,y=45)
 
 contrast_button = Button(window, text='Contrast', bg='black', fg='white')
-contrast_button.config(command=lambda: previewImg(my_label_2, filter='contrast', val=0.5))
+contrast_button.config(command=lambda: previewImg(my_label_2, filter='contrast', val=1.1, val2=0.5))
 contrast_button.config(height=2, width=15)
 contrast_button.place(x=1420,y=125)
 
@@ -240,7 +236,7 @@ brightness_slider.set(1.0)
 brightness_slider.config(command=lambda val:previewImg(my_label_2, filter='brightness', val=float(val)))
 # brightness_slider.place(x = 320, y = 705)
 
-contrast_slider = Scale(window, from_=0, to = 3.0, resolution=0.1, length= 800, orient=HORIZONTAL)
+
 
 cartoon_slider = Scale(window, from_ = 1, to= 15, length=800, orient= HORIZONTAL)
 cartoon_slider.config(command=lambda val:previewImg(my_label_2, filter= 'cartoon', val=int(val)))

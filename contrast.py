@@ -12,5 +12,6 @@ def contrast(img, factor ,mid= 0.5):
     for x in range(x_pixels):
         for y in range(y_pixels):
             for z in range(num_channel):
-                I[x,y,z] = (I[x,y,z]-mid)*factor + mid
+                I[x,y,z] = (I[x,y,z])*factor + mid
+
     return I
