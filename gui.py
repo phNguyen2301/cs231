@@ -99,6 +99,8 @@ def disable_slider(next):
     global current
     if current == 'brightness':
         brightness_slider.place(x=-100,y=-100)
+    if current == 'contrast':
+        contrast_slider.place(x=-100,y=-100)    
     if current == 'cartoon':
         cartoon_slider.place(x=-100,y=-100)
     if current == 'emboss':
@@ -106,6 +108,8 @@ def disable_slider(next):
         emboss_slider_2.place(x=-100,y=-100)
     if current == 'pencil':
         pencil_slider.place(x=-100,y=-100)
+    if current == 'frosted_glass':
+        frosted_slider.place(x=-100,y=-100)
     current = next
     
     
@@ -113,6 +117,8 @@ def disable_slider(next):
 def enable_slider():
     if current == 'brightness':
         brightness_slider.place(x = 320, y = 705)
+    if current == 'contrast':
+        contrast_slider.place(x = 320, y = 705)
     if current == 'cartoon':
         cartoon_slider.place(x = 320, y = 705)
     if current == 'emboss':
@@ -120,6 +126,8 @@ def enable_slider():
         emboss_slider_2.place(x= 740, y=705)
     if current == 'pencil':     
         pencil_slider.place(x = 320, y = 705)
+    if current == 'frosted_glass':     
+        frosted_slider.place(x = 320, y = 705)
 
 def previewImg(label, filter=None, val=0, val2=0):
     global img_output
@@ -128,7 +136,7 @@ def previewImg(label, filter=None, val=0, val2=0):
         img_output = brightness.brightness(img_input, val)
 
     elif filter == 'contrast':
-        img_output = contrast.contrast(img_input, val, val2)
+        img_output = contrast.contrast(img_input, val)
 
     elif filter == 'cartoon':
         img_output = cartoon.cartoon(img_input, val)
@@ -187,7 +195,7 @@ brightness_button.config(height=2, width=15)
 brightness_button.place(x=1420,y=45)
 
 contrast_button = Button(window, text='Contrast', bg='black', fg='white')
-contrast_button.config(command=lambda: previewImg(my_label_2, filter='contrast', val=1.1, val2=0.5))
+contrast_button.config(command=lambda: previewImg(my_label_2, filter='contrast', val=1))
 contrast_button.config(height=2, width=15)
 contrast_button.place(x=1420,y=125)
 
@@ -227,26 +235,29 @@ export_button.config(height= 2, width=15)
 export_button.place(x=1420, y=705)
 
 # SLIDER
+
+brightness_slider = Scale(window, from_=-80, to=80, length= 800, resolution=4, orient=HORIZONTAL)
+brightness_slider.config(command=lambda val:previewImg(my_label_2, filter='brightness', val=int(val)))
+brightness_slider.set(1)
+
+contrast_slider = Scale(window, from_= 0.2, to= 2, length= 800, resolution=0.1, orient=HORIZONTAL)
+contrast_slider.config(command=lambda val:previewImg(my_label_2, filter='contrast', val=float(val)))
+contrast_slider.set(1)
+
+frosted_slider = Scale(window, from_=5, to=20, length=800, resolution=5, orient=HORIZONTAL)
+frosted_slider.config(command=lambda val: previewImg(my_label_2, filter='frosted_glass', val=int(val)))
+
 pencil_slider = Scale(window, from_=1, to= 30, length= 800, orient=HORIZONTAL)
 pencil_slider.config(command=lambda val:previewImg(my_label_2, filter='pencil', val=int(val)))
-# pencil_slider.place(x = 320, y = 705)
-
-brightness_slider = Scale(window, from_=0, to=3.0, length= 800, resolution=0.1, orient=HORIZONTAL)
-brightness_slider.set(1.0)
-brightness_slider.config(command=lambda val:previewImg(my_label_2, filter='brightness', val=float(val)))
-# brightness_slider.place(x = 320, y = 705)
-
 
 
 cartoon_slider = Scale(window, from_ = 1, to= 15, length=800, orient= HORIZONTAL)
 cartoon_slider.config(command=lambda val:previewImg(my_label_2, filter= 'cartoon', val=int(val)))
 
-
 emboss_slider_1 = Scale(window, length=380, from_=2, to=10, orient= HORIZONTAL)
 emboss_slider_1.config(command=lambda val: previewImg(my_label_2, filter='emboss', val=int(val), val2=int(emboss_slider_2.get()) - 1))
 emboss_slider_2 = Scale(window, length=380, from_=1, to=4, tickinterval=1,orient=HORIZONTAL)
 emboss_slider_2.config(command=lambda val: previewImg(my_label_2, filter='emboss', val=int(emboss_slider_1.get()), val2=int(val) - 1))
-
 
 
 
