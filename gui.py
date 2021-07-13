@@ -52,22 +52,18 @@ def importImg(label):
     global current
     current = None
     filetypes = (
+        ('all files', '*.*'),
         ('png files', '*.png'),
         ('jpg files', '*.jpg')
     )
 
     filename = fd.askopenfilename(
         title='Open a file',
-        initialdir='./pics',
+        initialdir='C:\\Users\\nguye\\Desktop\\pics',
         filetypes=filetypes
     )
 
-    if filename:
-        showinfo(
-            title='Import Image',
-            message='Import Succeed'
-        )
-    else:
+    if not filename:
         showinfo(
             title='Error!',
             message='Please import again'
