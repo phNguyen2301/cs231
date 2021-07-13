@@ -10,5 +10,9 @@ Run Program
 
 ```
 python gui.py
+
+python vide.py
 ```
+
+
 
