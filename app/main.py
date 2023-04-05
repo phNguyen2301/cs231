@@ -1,6 +1,6 @@
 import customtkinter as ctk
 from image_widgets import *
-from PIL import Image, ImageTk, ImageOps
+from PIL import Image, ImageTk, ImageOps, ImageEnhance, ImageFilter
 from menu import Menu
 
 
@@ -42,13 +42,13 @@ class App(ctk.CTk):
             'brightness': ctk.DoubleVar(value=BRIGHTNESS_DEFAULT),
             'grayscale': ctk.BooleanVar(value=GRAYSCALE_DEFAULT),
             'invert': ctk.BooleanVar(value=INVERT_DEFAULT),
-            'vibrance': ctk.BooleanVar(value=VIBRANCE_DEFAULT)
+            'vibrance': ctk.DoubleVar(value=VIBRANCE_DEFAULT)
         }
 
         self.effect_vars = {
             'blur': ctk.DoubleVar(value=BLUR_DEFAULT),
-            'contrast': ctk.IntVar()(value=CONTRAST_DEFAULT),
-            'effect': ctk.StringVar()(value=EFFECT_OPTIONS[0])
+            'contrast': ctk.IntVar(value=CONTRAST_DEFAULT),
+            'effect': ctk.StringVar(value=EFFECT_OPTIONS[0])
         }
         combined_vars = list(self.pos_vars.values(
         )) + list(self.color_vars.values()) + list(self.effect_vars.values())
@@ -64,7 +64,7 @@ class App(ctk.CTk):
         self.image_output = ImageOutput(self, self.resize_image)
         self.close_button = CloseOutput(self, self.close_edit)
         self.menu = Menu(self, self.pos_vars,
-                         self.color_vars, self.effect_vars)
+                         self.color_vars, self.effect_vars, self.export_image)
 
     def close_edit(self):
         self.menu.grid_forget()
@@ -99,13 +99,60 @@ class App(ctk.CTk):
         self.image = self.original
 
         # rotate
-        self.image = self.image.rotate(self.pos_vars['rotation'].get())
+        if self.pos_vars['rotation'].get() != ROTATION_DEFALT:
+            self.image = self.image.rotate(self.pos_vars['rotation'].get())
 
         # zoom
-        self.image = ImageOps.crop(
-            image=self.image, border=self.pos_vars['zoom'].get())
+        if self.pos_vars['zoom'].get() != ZOOM_DEFAULT:
+            self.image = ImageOps.crop(
+                image=self.image, border=self.pos_vars['zoom'].get())
+
+        # flip
+        if self.pos_vars['flip'].get() != FLIP_OPTIONS[0]:
+            if self.pos_vars['flip'].get() == 'X':
+                self.image = ImageOps.mirror(self.image)
+            if self.pos_vars['flip'].get() == 'Y':
+                self.image = ImageOps.flip(self.image)
+            if self.pos_vars['flip'].get() == 'Both':
+                self.image = ImageOps.mirror(self.image)
+                self.image = ImageOps.flip(self.image)
+
+        # brightness, vibrance
+        if self.color_vars['brightness'].get() != BRIGHTNESS_DEFAULT:
+            brightness_enhancer = ImageEnhance.Brightness(self.image)
+            self.image = brightness_enhancer.enhance(
+                self.color_vars['brightness'].get())
+
+        if self.color_vars['vibrance'].get() != VIBRANCE_DEFAULT:
+            vibrance_enhancer = ImageEnhance.Color(self.image)
+            self.image = vibrance_enhancer.enhance(
+                self.color_vars['vibrance'].get())
+
+        # grayscale, invert
+        if self.color_vars['grayscale'].get():
+            self.image = ImageOps.grayscale(self.image)
+        if self.color_vars['invert'].get():
+            self.image = ImageOps.invert(self.image)
+
+        # blur
+        if self.effect_vars['blur'].get() != BLUR_DEFAULT:
+            self.image = self.image.filter(
+                ImageFilter.GaussianBlur(self.effect_vars['blur'].get()))
+        if self.effect_vars['contrast'].get() != CONTRAST_DEFAULT:
+            self.image = self.image.filter(
+                ImageFilter.UnsharpMask(self.effect_vars['contrast'].get()))
+
+        match self.effect_vars['effect'].get():
+            case 'Emboss': self.image = self.image.filter(ImageFilter.EMBOSS)
+            case 'Find edges': self.image = self.image.filter(ImageFilter.FIND_EDGES)
+            case 'Contour': self.image = self.image.filter(ImageFilter.CONTOUR)
+            case 'Edge enhance': self.image = self.image.filter(ImageFilter.EDGE_ENHANCE_MORE)
 
         self.place_image()
+
+    def export_image(self, name, file, path):
+        export_string = f'{path}/{name}.{file}'
+        self.image.save(export_string)
 
 
 App()
